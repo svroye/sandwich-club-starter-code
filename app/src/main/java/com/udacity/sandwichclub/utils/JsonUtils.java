@@ -21,27 +21,56 @@ public class JsonUtils {
             // one the first level, the JSONObjecy contains following elements:
             // name --> JSONObject, placeOfOrigin --> String, description --> String,
             // image --> String, ingredients --> array
-            JSONObject name = jsonResponse.getJSONObject("name");
-            String placeOfOrigin = jsonResponse.getString("placeOfOrigin");
-            String description = jsonResponse.getString("description");
-            String image = jsonResponse.getString("image");
-            JSONArray ingredients = jsonResponse.getJSONArray("ingredients");
+            JSONObject name = null;
+            String placeOfOrigin = null;
+            String description = null;
+            String image = null;
+            JSONArray ingredients = null;
+
+            // first check whether the key is present in the response before extracting it
+            if(jsonResponse.has("name")) {
+                 name = jsonResponse.getJSONObject("name");
+            }
+
+            if(jsonResponse.has("placeOfOrigin")){
+                placeOfOrigin = jsonResponse.optString("placeOfOrigin");
+            }
+
+            if (jsonResponse.has("description")){
+                description = jsonResponse.optString("description");
+            }
+
+            if (jsonResponse.has("image")){
+                image = jsonResponse.optString("image");
+            }
+
+            if (jsonResponse.has("ingredients")){
+                ingredients = jsonResponse.getJSONArray("ingredients");
+            }
 
             // the JSONObject name contains following levels
             // mainName --> String, alsoKnownAs --> JSONArray
-            String mainName = name.getString("mainName");
-            JSONArray alsoKnownAs = name.getJSONArray("alsoKnownAs");
+            String mainName = null;
+            JSONArray alsoKnownAs = null;
+
+            if (name.has("mainName")){
+                mainName = name.optString("mainName");
+            }
+
+            if (name.has("alsoKnownAs")){
+                alsoKnownAs = name.getJSONArray("alsoKnownAs");
+            }
 
             // convert JSONArray alsoKnownAs to a list
             ArrayList<String> alsoKnownAsList = new ArrayList<String>();
             for(int i=0; i < alsoKnownAs.length(); i++){
-                alsoKnownAsList.add(alsoKnownAs.getString(i));
+                alsoKnownAsList.add(alsoKnownAs.optString(i));
             }
 
             // convert JSONArray ingredients to a list
             ArrayList<String> ingredientsList = new ArrayList<String>();
             for(int i=0; i < ingredients.length(); i++){
-                ingredientsList.add(ingredients.getString(i));
+                ingredientsList.add(ingredients.optString(i));
             }
 
             sandwich = new Sandwich(mainName, (List) alsoKnownAsList, placeOfOrigin,
